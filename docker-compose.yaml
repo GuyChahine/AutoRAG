@@ -1,0 +1,36 @@
+networks:
+  net:
+    driver: bridge
+
+services:
+
+  mongo:
+    image: mongo
+    ports:
+      - "${MONGO_PORT}:27017"
+    volumes:
+      - ./db/mongo:/data/db
+
+  chromadb:
+    image: chromadb/chroma
+    volumes:
+      - ./db/chroma:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma # this is the default path, change it as needed
+      - ANONYMIZED_TELEMETRY=${ANONYMIZED_TELEMETRY:-TRUE}
+    ports:
+      - "${CHROMA_PORT}:8000"
+    networks:
+      - net
+  
+  ai:
+    build:
+      context: ./ai
+      dockerfile: Dockerfile
+    container_name: ai-container
+    ports:
+      - "${AI_API_PORT}:8000" # Map host port 8000 to container port 8000
+    volumes:
+      - ./ai/ai:/app/ai # Mount the app directory for hot-reloading
+    command: ./.venv/bin/fastapi dev ./ai/main.py --reload
