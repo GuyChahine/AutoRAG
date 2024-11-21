@@ -15,7 +15,7 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock /app/
 
 # Install dependencies using Poetry
-RUN poetry install --no-root --only main
+RUN poetry install --only main
 
 # Copy the application code
 COPY ai /app/ai

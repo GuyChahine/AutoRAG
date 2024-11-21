@@ -33,4 +33,4 @@ services:
       - "${AI_API_PORT}:8000" # Map host port 8000 to container port 8000
     volumes:
       - ./ai/ai:/app/ai # Mount the app directory for hot-reloading
-    command: ./.venv/bin/fastapi dev ./ai/main.py --reload
+    command: poetry run fastapi dev ./ai/main.py --host 0.0.0.0 --reload
