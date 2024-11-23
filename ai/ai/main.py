@@ -7,7 +7,7 @@ app = FastAPI()
 
 @app.get("/")
 def root():
-    return {"message": "Hello World!"}
+    return "ai is running!"
 
 
 app.include_router(embed.router)

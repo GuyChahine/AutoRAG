@@ -34,3 +34,14 @@ services:
     volumes:
       - ./ai/ai:/app/ai # Mount the app directory for hot-reloading
     command: poetry run fastapi dev ./ai/main.py --host 0.0.0.0 --reload
+  
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend-container
+    ports:
+      - "${BACKEND_API_PORT}:8000" # Map host port 8000 to container port 8000
+    volumes:
+      - ./backend/backend:/app/backend # Mount the app directory for hot-reloading
+    command: poetry run fastapi dev ./backend/main.py --host 0.0.0.0 --reload
