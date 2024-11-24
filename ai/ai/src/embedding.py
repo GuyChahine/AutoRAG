@@ -10,6 +10,6 @@ class BGELargeEnV1_5:
         self.model.eval()
 
     def __call__(self, documents: list[str]) -> list[list[float]]:
-        encoded_documents = self.tokenizer(documents, return_tensors="pt")
+        encoded_documents = self.tokenizer(documents, return_tensors="pt", padding=True)
         with torch.no_grad():
             return self.model(**encoded_documents)[0][:, 0].tolist()

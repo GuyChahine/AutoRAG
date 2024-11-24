@@ -1,5 +1,4 @@
 import requests
-from bs4 import BeautifulSoup
 
 
 class SimpleScrapper:
@@ -15,9 +14,4 @@ class SimpleScrapper:
             raise RuntimeError(f"Failed to fetch the link '{link}'. Error: {e}") from e
         if not res.content:
             raise ValueError(f"No content retrieved from the link '{link}'.")
-
-        soup = BeautifulSoup(res.text)
-        document = soup.get_text()
-        if not document:
-            raise ValueError(f"No text retrieved from the link '{link}'.")
-        return document
+        return res.text

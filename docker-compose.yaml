@@ -1,7 +1,3 @@
-networks:
-  net:
-    driver: bridge
-
 services:
 
   mongo:
@@ -21,9 +17,7 @@ services:
       - ANONYMIZED_TELEMETRY=${ANONYMIZED_TELEMETRY:-TRUE}
     ports:
       - "${CHROMA_PORT}:8000"
-    networks:
-      - net
-  
+
   ai:
     build:
       context: ./ai
@@ -34,7 +28,7 @@ services:
     volumes:
       - ./ai/ai:/app/ai # Mount the app directory for hot-reloading
     command: poetry run fastapi dev ./ai/main.py --host 0.0.0.0 --reload
-  
+
   backend:
     build:
       context: ./backend
@@ -44,4 +38,9 @@ services:
       - "${BACKEND_API_PORT}:8000" # Map host port 8000 to container port 8000
     volumes:
       - ./backend/backend:/app/backend # Mount the app directory for hot-reloading
+    env_file:
+      .env.public
+    depends_on:
+      - mongo
+      - chromadb
     command: poetry run fastapi dev ./backend/main.py --host 0.0.0.0 --reload
