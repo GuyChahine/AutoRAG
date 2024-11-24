@@ -1,7 +1,7 @@
 import requests
 
 
-class SimpleScrapper:
+class Scrapper:
 
     def __init__(self):
         self.session = requests.Session()
