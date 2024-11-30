@@ -28,7 +28,7 @@ def add_chatbot(
 def add_document_link(
     user: str,
     chatbot: str,
-    link: str = Body(),
+    link: str = Body(...),
 ):
     res = requests.post(AI_URL + "/scrap/link", data=json.dumps({"link": link}))
     res = requests.post(
@@ -68,7 +68,7 @@ def ask_chatbot(
     return query_results["documents"][0]
 
 
-@app.post("/{user}/remove")
+@app.post("/{user}/remove/chatbot")
 def remove_chatbot(
     user: str,
     chatbot: str = Body(...),

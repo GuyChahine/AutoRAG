@@ -44,3 +44,18 @@ services:
       - mongo
       - chromadb
     command: poetry run fastapi dev ./backend/main.py --host 0.0.0.0 --reload
+  
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    container_name: ui-container
+    ports:
+      - "${UI_PORT}:8501"
+    volumes:
+      - ./ui/ui:/app/ui # Mount the app directory for hot-reloading
+    env_file:
+      .env.public
+    depends_on:
+      - backend
+    command: poetry run streamlit run ./ui/1_💬_Chat.py --server.address 0.0.0.0 --server.port 8501 --server.fileWatcherType auto
