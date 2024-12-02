@@ -24,6 +24,30 @@ def add_chatbot(
     return f"{chatbot=} added for {user=}."
 
 
+@app.post("/{user}/update/{chatbot}/add_document/text")
+def add_document_text(
+    user: str,
+    chatbot: str,
+    text: str = Body(...),
+):
+    res = requests.post(AI_URL + "/clean/html/simple", data=json.dumps({"html": text}))
+    res = requests.post(
+        AI_URL + "/chunk/character", data=json.dumps({"document": res.text})
+    )
+    documents = res.json()
+    res = requests.post(
+        AI_URL + "/embed/bge_large_en_v1_5", data=json.dumps({"documents": documents})
+    )
+    embeded_documents = res.json()
+    chromadb_collection = CHROMA_CLIENT.get_collection(f"{user}_{chatbot}")
+    chromadb_collection.add(
+        ids=[str(uuid4()) for _ in range(len(documents))],
+        embeddings=embeded_documents,
+        documents=documents,
+    )
+    return f"text='{text[:50]}...', has been added to: {user=}, {chatbot=}"
+
+
 @app.post("/{user}/update/{chatbot}/add_document/link")
 def add_document_link(
     user: str,
