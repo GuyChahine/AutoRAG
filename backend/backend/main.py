@@ -80,6 +80,7 @@ def ask_chatbot(
     user: str,
     chatbot: str,
     query: str = Body(...),
+    query_type: str = Body(...),
 ):
     res = requests.post(
         AI_URL + "/embed/bge_large_en_v1_5", data=json.dumps({"documents": [query]})
@@ -88,8 +89,18 @@ def ask_chatbot(
     chromadb_collection = CHROMA_CLIENT.get_collection(f"{user}_{chatbot}")
     query_results = chromadb_collection.query(
         query_embeddings=embedded_query, n_results=3
+    )["documents"][0]
+    res = requests.post(
+        AI_URL + "/llm/gpt/gpt-4o-mini",
+        data=json.dumps(
+            {
+                "query": query,
+                "query_results": query_results,
+                "query_type": query_type,
+            }
+        ),
     )
-    return query_results["documents"][0]
+    return res.json()
 
 
 @app.post("/{user}/remove/chatbot")

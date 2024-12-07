@@ -20,9 +20,9 @@ class Chat:
         chatbot = st.session_state["UserChatbotSelectData"].set_chatbot_choice
         res = requests.post(
             f"http://backend:8000/{user}/ask/{chatbot}",
-            json=prompt,
+            json={"query": prompt, "query_type": "ui"},
         )
-        return res.text
+        return res.json()
 
     def __call__(self):
         prompt = st.chat_input(
