@@ -1,17 +1,13 @@
 from fastapi import APIRouter, Body
-from pydantic import BaseModel
 
-from ai.src.chunking import CharacterChunking
+from ai.src.chunk import CharacterChunking
+from ai.models import chunk as models
 
 router = APIRouter(prefix="/chunk")
 
 Chunk_CharacterChunking = CharacterChunking()
 
 
-class ChunkSchema(BaseModel):
-    document: str
-
-
 @router.post("/character")
-def character(data: ChunkSchema) -> list[str]:
-    return Chunk_CharacterChunking(data.document)
+def character(body: models.Chunk = Body(...)) -> models.ChunkResponse:
+    return Chunk_CharacterChunking(body.document)

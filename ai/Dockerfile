@@ -12,7 +12,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl \
 WORKDIR /app
 
 # Copy project files
-COPY pyproject.toml poetry.lock /app/
+COPY pyproject.toml poetry.lock README.md /app/
+
+RUN mkdir -p /app/ai && touch /app/ai/__init__.py
 
 # Install dependencies using Poetry
 RUN poetry install --only main

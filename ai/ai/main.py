@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 
 from ai.routes import embed, scrap, chunk, clean, llm
 
@@ -7,7 +8,7 @@ app = FastAPI()
 
 @app.get("/")
 def root():
-    return "ai is running!"
+    return RedirectResponse("/docs")
 
 
 app.include_router(scrap.router)

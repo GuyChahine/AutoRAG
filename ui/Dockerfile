@@ -12,10 +12,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl \
 WORKDIR /app
 
 # Copy project files
-COPY . /app/
+COPY pyproject.toml poetry.lock README.md /app/
+
+RUN mkdir -p /app/ui && touch /app/ui/__init__.py
 
 # Install dependencies using Poetry
 RUN poetry install --only main
+
+COPY .streamlit /app
+
+COPY ui /app/ui
 
 # Expose port 8000
 EXPOSE 8501

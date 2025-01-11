@@ -1,17 +1,14 @@
 from fastapi import APIRouter, Body
-from pydantic import BaseModel
 
-from ai.src.cleaner import HtmlSimpleCleaner
+
+from ai.src.clean import HtmlSimpleCleaner
+from ai.models import clean as models
 
 router = APIRouter(prefix="/clean")
 
 Clean_SimpleCleaner = HtmlSimpleCleaner()
 
 
-class CleanSchema(BaseModel):
-    html: str
-
-
 @router.post("/html/simple")
-def html_simple_cleaner(data: CleanSchema) -> str:
-    return Clean_SimpleCleaner(data.html)
+def html_simple_cleaner(body: models.Clean = Body(...)) -> models.CleanResponse:
+    return Clean_SimpleCleaner(html=body.document)
